@@ -1,0 +1,10 @@
+Click==7.0
+PyExecJS==1.5.1
+watchdog==0.10.2
+pyaes==1.6.1
+requests==2.24.0
+prettytable==0.7.2
+tenacity==6.0.0
+tqdm==4.32.1
+beautifulsoup4==4.9.1
+Pillow==7.2.0
