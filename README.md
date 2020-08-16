@@ -1,7 +1,7 @@
 # Manga-dl
 **[Manga-dl](https://github.com/iworldtong/manga-dl)** is a command line tool which helps you search and download comic from multiple sources.
 
-Support for Mangabz、Manhuagui、Manhuabei and Manhuadb. See [supported sources](https://github.com/iworldtong/manga-dl#支持的漫画站点).
+Support for Mangabz、~~Manhuagui~~、Manhuabei and Manhuadb. See [supported sources](https://github.com/iworldtong/manga-dl#支持的漫画站点).
 
 **Python3 Only. Python 3.7+ Recommended.**
 
@@ -9,7 +9,7 @@ Support for Mangabz、Manhuagui、Manhuabei and Manhuadb. See [supported sources
 
 **[Manga-dl](https://github.com/iworldtong/manga-dl)**是一个基于Python3的命令行工具，可以从多个网站搜索和下载漫画，方便寻找漫画，解决不知道哪个网站有版权的问题。工具的本意是**聚合搜索**，API是从公开的网络中获得，**不是破解版**，也不能下载付费漫画。
 
-欢迎提交插件支持更多漫画站点！插件写法参考`manga_dl/sites`中的文件。查看 [支持的漫画站点](#支持的漫画站点)。
+欢迎提交插件支持更多漫画站点！插件写法参考`manga_dl/addons`中的文件。查看 [支持的漫画站点](#支持的漫画站点)。
 
 **禁止将本工具用于商业用途**，如产生法律纠纷与本人无关，如有侵权，请联系我删除。
 
@@ -64,18 +64,19 @@ $ ./manga-dl
 $ manga-dl --help
 Usage: manga-dl [OPTIONS]
 
-  Search and download comic from Mangabz, Manhuagui, Manhuabei, Manhuadb.
-  Example: manga-dl -k ""
+  Search and download comic from multiple sources.
+
+  Example: manga-dl -k 辉夜大小姐
 
 Options:
   --version             Show the version and exit.
-  -k, --keyword TEXT    搜索漫画关键字（如"辉夜大小姐"）
-  -u, --url TEXT        通过指定的歌曲URL下载音乐
-  -s, --source TEXT     Supported comic source: mangabz, manhuagui, manhuabei, manhuadb
-  -n, --number INTEGER  Number of search results
-  -o, --outdir TEXT     Output directory
-  -x, --proxy TEXT      Proxy (e.g. socks5://127.0.0.1:1086)
-  -r, --reverse         对漫画章节降序下载
+  -k, --keyword TEXT    搜索关键字
+  -u, --url TEXT        通过指定的漫画URL下载
+  -s, --source TEXT     支持的数据源 ('+'分割): manhuabei+mangabz
+  -n, --number INTEGER  搜索数量限制
+  -o, --outdir TEXT     指定输出目录, 默认'./manga'
+  -x, --proxy TEXT      指定代理（如socks5://127.0.0.1:1086）
+  -v, --verbose         详细模式
   --nomerge             不对搜索结果列表排序和去重
   --help                Show this message and exit.
 ```
@@ -86,6 +87,8 @@ Options:
 - 支持http代理和socks代理，格式形如`-x http://127.0.0.1:1087`或`-x socks5://127.0.0.1:1086`
 
 示例：
+
+<img src="https://pic.downk.cc/item/5f38a97114195aa59437c84a.png">
 
 ## 支持的漫画站点
 
