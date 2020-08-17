@@ -40,13 +40,14 @@ class DownloadProgressBar(FileSystemEventHandler):
         self.update()
 
     def update(self, end=False):
-        fl = [f for f in os.listdir(self.watch_dir) if not f.endswith('.part')]
+        fl = [f for f in os.listdir(self.watch_dir) if f[0] != '.' and not f.endswith('.part')]
         cur_num = len(fl)
         update_num = cur_num - self.last_num
         self.last_num = cur_num
+
         self.pbar.update(update_num) 
-        if end and self.last_num != self.total_num:
-            print()
+        if end and cur_num != self.total_num:
+            click.echo("")
 
 
 class BasicManga:
@@ -178,14 +179,14 @@ class BasicManga:
                 if not os.path.exists(os.path.join(save_dir, image['fname'])):
                     tmp_images.append(image)
             images = tmp_images
-
+        
         event_handler.update(end=True)
         observer.stop()
         observer.join()
             
     def download_chapters(self, chapters):
         for i, c in enumerate(chapters):
-            click.echo("Fetching {}".format(c['url']), nl=False)
+            print("Fetching {}".format(c['url']), end='\r')
 
             images = self.api.fetch_chapter(c['url'])
             save_dir = os.path.join(config.get('outdir'), self.title, c['title'])
