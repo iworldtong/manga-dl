@@ -37,14 +37,16 @@ class DownloadProgressBar(FileSystemEventHandler):
         self.total_num = total_num
 
     def on_any_event(self, event):
+        self.update()
+
+    def update(self):
         fl = [f for f in os.listdir(self.watch_dir) if not f.endswith('.part')]
         cur_num = len(fl)
         update_num = cur_num - self.last_num
         self.last_num = cur_num
         self.pbar.update(update_num) 
-        if self.last_num == self.total_num:
+        if self.last_num != self.total_num:
             print()
-
 
 
 class BasicManga:
@@ -177,6 +179,7 @@ class BasicManga:
                     tmp_images.append(image)
             images = tmp_images
 
+        event_handler.update()
         observer.stop()
         observer.join()
             
