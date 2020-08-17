@@ -159,7 +159,9 @@ class BasicManga:
                 thread_pool = []
                 for image in images[s_pnt:e_pnt]:                    
                     save_path = os.path.join(save_dir, image['fname'])
-                    t = DownloadThread(image['url'], save_path, proxies=self.api.proxies)
+                    t = DownloadThread(image['url'], save_path, \
+                                       headers=self.api.session.headers,\
+                                       proxies=self.api.session.proxies)
                     t.start()
                     thread_pool.append(t)
 
@@ -208,7 +210,11 @@ class BasicManga:
         if input('Continue? [Y|n]') not in ['y', 'Y', '']:
             return
 
-        self.picked_chapters = self.select_chapters(self.all_chapters)
+        if config.get('download_all'):
+            self.picked_chapters = self.all_chapters
+        else:
+            self.picked_chapters = self.select_chapters(self.all_chapters)
+            
         self.download_chapters(self.picked_chapters)
 
         click.echo("===============================================================\n")

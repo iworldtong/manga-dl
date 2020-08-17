@@ -94,7 +94,7 @@ class DownloadThread(threading.Thread):
     def run(self):   
         self.download(self.url, self.save_path)
 
-    def download(self, img_url, img_path):
+    def download(self, img_url, img_path, api=None):
         if os.path.exists(img_path):
             if img_verify(img_path):
                 return

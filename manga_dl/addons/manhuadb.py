@@ -1,5 +1,6 @@
 import os
 import re
+import copy
 import execjs
 import urllib.parse
 from tqdm import tqdm
@@ -7,22 +8,21 @@ from bs4 import BeautifulSoup
 
 from .. import config
 from ..api import MangaApi
-from ..utils import retry_get, validate_title
+from ..utils import validate_title
 
 
 
-class Manhuadb:
+class Manhuadb(MangaApi):
+
     source_url = config.get('source2url')['manhuadb']
-    headers = {
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-            }
 
-    proxies = config.get('proxies')
+    session = copy.deepcopy(MangaApi.session)
+    session.headers.update({"referer": source_url})
 
 
     @classmethod
     def fetch_chapter(cls, chapter_url, chapter_dir=None):
-        content = retry_get(chapter_url, proxies=cls.proxies).content
+        content = cls.request(chapter_url, method="GET").content
         bs = BeautifulSoup(content, features="lxml")
 
         page_total = bs.find('ol', {'class': 'breadcrumb'}).find_all('li')[-1].text
@@ -39,7 +39,7 @@ class Manhuadb:
                    continue
 
             page_url = '.'.join(chapter_url.split('.')[:-1]) + '_p' + str(i + 1) + '.' + chapter_url.split('.')[-1]
-            content = retry_get(page_url, proxies=cls.proxies).content
+            content = cls.request(page_url, method="GET").content
             page_bs = BeautifulSoup(content, features='lxml')
             img_url = page_bs.find_all('img', {'class': ['img-fluid', 'show-pic']})[0].get('src')
             img_name = str(i+1) + os.path.splitext(cls.url2fn(img_url))[-1]
@@ -53,7 +53,7 @@ class Manhuadb:
 
     @classmethod
     def fetch_manga(cls, manga_url):
-        content = retry_get(manga_url, proxies=cls.proxies).content
+        content = cls.request(manga_url, method="GET").content
         bs = BeautifulSoup(content, features="lxml")
 
         # details
@@ -95,7 +95,7 @@ class Manhuadb:
         while True:
             page_num += 1
             search_url = cls.source_url + '/search?q={}&p={}'.format(keyword, page_num)
-            content = retry_get(search_url, proxies=cls.proxies).content
+            content = cls.request(search_url, method="GET").content
             bs = BeautifulSoup(content, features="lxml")
 
             container = bs.find('div', {'class': 'comic-main-section'})

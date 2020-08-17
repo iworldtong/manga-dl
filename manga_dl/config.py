@@ -25,6 +25,8 @@ def init():
         "keyword": "",
         # 从URL下载 -u --url
         "url": "",
+        # 整部漫画下载，不进入章节选择界面 -a --download_all
+        "download_all": False,
         # 代理 -x --proxy
         "proxies": None,
         # 显示详情 -v --verbose
@@ -41,20 +43,11 @@ def init():
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0",  # noqa
             "referer": "https://www.google.com",
         },
-        # 下载时的headers
-        "wget_headers": {
-            "Accept": "*/*",
-            "Accept-Encoding": "identity",
-            "User-Agent": "Wget/1.19.5 (darwin17.5.0)",
-        },
-        # 移动端useragent
-        "ios_useragent": "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46"
-        + " (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1",
-
+    
         # 漫画源
         "source2url": {
             'mangabz'  : 'https://www.mangabz.com', 
-            'manhuagui': 'https://www.manhuagui.com',
+            # 'manhuagui': 'https://www.manhuagui.com',
             'manhuabei': 'https://www.manhuabei.com',
             'manhuadb' : 'https://www.manhuadb.com',
         }

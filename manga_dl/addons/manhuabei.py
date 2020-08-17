@@ -9,27 +9,26 @@ from bs4 import BeautifulSoup
 
 from .. import config
 from ..api import MangaApi
-from ..utils import retry_get, validate_title
+from ..utils import validate_title
 
 
-class Manhuabei:
+class Manhuabei(MangaApi):
 
     source_url = config.get('source2url')['manhuabei']
-    headers = {
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-            }
 
-    proxies = config.get('proxies') 
+    session = copy.deepcopy(MangaApi.session)
+    session.headers.update({"referer": source_url})
 
 
     @classmethod
     def fetch_image_js(cls, url):
-        cls.headers['Referer'] = url
-        html = retry_get(url, headers=cls.headers, proxies=cls.proxies)
+        cls.session.headers.update({"referer": url})
+        html = cls.request(url, method="GET")
+        cls.session.headers.update({"referer": cls.source_url})
 
         # find Key and IV
         js_fix = re.search('/js/decrypt[0-9]+.js', html.text).group(0)
-        js_str = retry_get(cls.source_url + js_fix, proxies=cls.proxies).text
+        js_str = cls.request(cls.source_url + js_fix, method="GET").text
         IV_encrypted = re.findall("iv':(_.*?),", js_str)[0] #_0x1c8ae7
         IV_searchkey = re.findall('var ' + IV_encrypted + ".*?\['parse'\].*?\[(.*?\'\))\]\);", js_str)[0]  #_0x4936('2d','OO8Z')
         IV_searchvalue = execjs.compile(js_str).eval(IV_searchkey) #TOtFq
@@ -86,7 +85,7 @@ class Manhuabei:
 
     @classmethod
     def fetch_manga(cls, manga_url):
-        content = retry_get(manga_url, proxies=cls.proxies).content
+        content = cls.request(manga_url, method="GET").content
         bs = BeautifulSoup(content, features="lxml")
 
         # details
@@ -127,7 +126,7 @@ class Manhuabei:
         while True:
             page_num += 1
             search_url = cls.source_url + '/search/?keywords={}&page={}'.format(keyword, page_num)
-            content = retry_get(search_url, proxies=cls.proxies).content
+            content = cls.request(search_url, method="GET").content
             bs = BeautifulSoup(content, features="lxml")
             lis = bs.find('div', {'id': 'w0'}).find_all('li', {'class': 'list-comic'})
             manga_urls.extend([li.find('a').get('href') for li in lis])

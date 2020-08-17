@@ -88,7 +88,7 @@ Options:
 
 示例：
 
-<img src="https://pic.downk.cc/item/5f38a97114195aa59437c84a.png">
+<img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1597549624/github/manga-dl_k-1.png">
 
 ## 支持的漫画站点
 
@@ -99,7 +99,7 @@ Options:
 | <a href="https://www.manhuagui.com/"><img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1596637722/github/manhuabei_logo.png" height="50px"></a> | [漫画呗](https://www.manhuabei.com/) | 原名漫画堆、50漫画网，非商业性的二次元分享交流网站，不仅是一个提供宣传推广全世界各种不同漫画文化的分享交流平台，更致力于推动和发展国内原创动漫。 |
 | <a href="https://www.manhuadb.com/"><img src="https://www.manhuadb.com/assets/www/img/logo.png" height="40px"></a> | [漫画DB](https://www.manhuadb.com/)  | 最专业的日本漫画大全资料库。所有漫画均可免费在线看，同时每部漫画都有丰富的资料，包括登场人物、用语、设定、改编作品及创作幕后等深层的内容。 |
 
-欢迎提交插件支持更多漫画源！插件写法参考`manga_dl/sites`中的文件
+欢迎提交插件支持更多漫画源！插件写法参考`manga_dl/addons`中的文件
 
 ## 更新记录
 

@@ -1,5 +1,6 @@
 import os
 import re
+import copy
 import execjs
 import urllib.parse
 from tqdm import tqdm
@@ -8,22 +9,23 @@ import requests
 
 from .. import config
 from ..api import MangaApi
-from ..utils import retry_get
+from ..utils import validate_title
 
 
 
-class Mangabz:
+class Mangabz(MangaApi):
+
     source_url = config.get('source2url')['mangabz']
-    headers = {
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-            }
 
-    proxies = config.get('proxies') 
+    session = copy.deepcopy(MangaApi.session)
+    session.headers.update({"referer": source_url})
                         
     @classmethod
     def fetch_chapter_argv(cls, chapter_url):
-        cls.headers['Referer'] = chapter_url
-        res = retry_get(chapter_url, headers=cls.headers, proxies=cls.proxies)
+        cls.session.headers.update({"referer": chapter_url})
+        res = cls.request(url, method="GET")
+        cls.session.headers.update({"referer": cls.source_url})
+
         mangabz_cid = re.findall("MANGABZ_CID=(.*?);", res.text)[0]
         mangabz_mid = re.findall("MANGABZ_MID=(.*?);", res.text)[0]
         page_total = re.findall("MANGABZ_IMAGE_COUNT=(.*?);", res.text)[0]
@@ -34,8 +36,8 @@ class Mangabz:
     @classmethod
     def fetch_images_js(cls, chapter_url, page, mangabz_cid, mangabz_mid, mangabz_viewsign_dt, mangabz_viewsign):
         url = chapter_url + "chapterimage.ashx?" + "cid=%s&page=%s&key=&_cid=%s&_mid=%s&_dt=%s&_sign=%s" % (mangabz_cid, page, mangabz_cid, mangabz_mid, urllib.parse.quote(mangabz_viewsign_dt), mangabz_viewsign)
-        res = retry_get(url, headers=cls.headers, proxies=cls.proxies)
-        cls.headers["Referer"] = res.url
+        res = cls.request(url, method="GET")
+        cls.session.headers.update({"referer": res.url})
         return res.text
 
     @classmethod
@@ -68,7 +70,8 @@ class Mangabz:
 
     @classmethod
     def fetch_manga(cls, manga_url):
-        bs = BeautifulSoup(retry_get(manga_url, proxies=cls.proxies).content, features="lxml")
+        content = cls.request(manga_url, method="GET").content
+        bs = BeautifulSoup(content, features="lxml")
 
         # details
         manga_title = bs.find('div', {'class': 'detail-info'})
@@ -113,7 +116,7 @@ class Mangabz:
         while True:
             page_num += 1
             search_url = cls.source_url + '/search?title={}&page={}'.format(keyword, page_num)
-            content = retry_get(search_url, proxies=cls.proxies).content
+            content = cls.request(search_url, method="GET").content
             bs = BeautifulSoup(content, features="lxml")
 
             container = bs.find('ul', {'class': 'mh-list'})
@@ -122,7 +125,7 @@ class Mangabz:
 
             items = container.find_all('div', {'class': 'mh-item'})
             manga_urls.extend([cls.source_url + i.find('a').get('href') for i in items])
-
+            
             if len(manga_urls) >= max_num:
                 return manga_urls[:max_num]
 

@@ -90,6 +90,7 @@ def run():
 )
 @click.option("-n", "--number", default=5, help=_("搜索数量限制"))
 @click.option("-o", "--outdir", default="./manga", help=_("指定输出目录, 默认'./manga'"))
+@click.option("-a", "--download_all", default=False, help=_("下载整部漫画，不进入章节选择界面"))
 @click.option("-x", "--proxy", default="", help=_("指定代理（如socks5://127.0.0.1:1086）"))
 @click.option("-v", "--verbose", default=False, is_flag=True, help=_("详细模式"))
 @click.option("--nomerge", default=False, is_flag=True, help=_("不对搜索结果列表排序和去重"))
@@ -100,19 +101,18 @@ def main(
     source,
     number,
     outdir,
+    download_all,
     proxy,
     verbose,
     nomerge,
 ):
     """
         Search and download comic from multiple sources.\n
+        Supported sites: https://github.com/iworldtong/manga-dl#支持的漫画站点 \n
         Example: manga-dl -k 辉夜大小姐
+        
     """
     if sum([bool(keyword), bool(url)]) != 1:
-        # click.echo(_("ERROR: 必须指定搜索关键字、漫画的URL中的一个") + "\n", err=True)
-        # ctx = click.get_current_context()
-        # click.echo(ctx.get_help())
-        # ctx.exit()
         keyword = click.prompt(_("搜索关键字") + "\n >>")
 
     # 初始化全局变量
@@ -123,6 +123,7 @@ def main(
         config.set("source", source)
     config.set("number", min(number, 50))
     config.set("outdir", outdir)
+    config.set("download_all", download_all)
     config.set("verbose", verbose)
     config.set("nomerge", nomerge)
     if proxy:
