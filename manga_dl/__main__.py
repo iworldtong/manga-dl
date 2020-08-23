@@ -90,10 +90,13 @@ def run():
 )
 @click.option("-n", "--number", default=5, help=_("搜索数量限制"))
 @click.option("-o", "--outdir", default="./manga", help=_("指定输出目录, 默认'./manga'"))
-@click.option("-a", "--download_all", default=False, help=_("下载整部漫画，不进入章节选择界面"))
+@click.option("-a", "--download_all", default=False, is_flag=True, help=_("下载整部漫画，不进入章节选择界面"))
 @click.option("-x", "--proxy", default="", help=_("指定代理（如socks5://127.0.0.1:1086）"))
 @click.option("-v", "--verbose", default=False, is_flag=True, help=_("详细模式"))
 @click.option("--nomerge", default=False, is_flag=True, help=_("不对搜索结果列表排序和去重"))
+
+@click.option("--aes_key", default='KA58ZAQ54321bbG1', help=_("manhuabei"))
+@click.option("--aes_iv", default='A1B2C3DEF1G321bb', help=_("manhuebai"))
 
 def main(
     keyword,
@@ -105,6 +108,8 @@ def main(
     proxy,
     verbose,
     nomerge,
+    aes_key,
+    aes_iv,
 ):
     """
         Search and download comic from multiple sources.\n
@@ -126,6 +131,10 @@ def main(
     config.set("download_all", download_all)
     config.set("verbose", verbose)
     config.set("nomerge", nomerge)
+
+    config.set("KEY", aes_key)
+    config.set("IV", aes_iv)
+
     if proxy:
         proxies = {"http": proxy, "https": proxy}
         config.set("proxies", proxies)

@@ -1,7 +1,7 @@
 # Manga-dl
 **[Manga-dl](https://github.com/iworldtong/manga-dl)** is a command line tool which helps you search and download comic from multiple sources.
 
-Support for Mangabz、~~Manhuagui~~、Manhuabei and Manhuadb. See [supported sources](https://github.com/iworldtong/manga-dl#支持的漫画站点).
+Support for Mangabz、Manhuagui、Manhuabei and Manhuadb. See [supported sources](https://github.com/iworldtong/manga-dl#支持的漫画站点).
 
 **Python3 Only. Python 3.7+ Recommended.**
 
@@ -103,6 +103,7 @@ Options:
 
 ## 更新记录
 
+- 2020-08-23 Manhuagui访问不稳定；Manhuabei JS解析变动，添加`--aes_key、-aes_iv`参数暂时通过外部方式配置
 - 2020-08-18 修复下载进度条显示错位问题
 - 2020-08-15 完成v0.1版
 

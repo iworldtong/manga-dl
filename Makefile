@@ -1,3 +1,4 @@
+Nal/iGithub/manga-dl/
 .PHONY: test
 
 ci:

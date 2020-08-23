@@ -47,7 +47,7 @@ class DownloadProgressBar(FileSystemEventHandler):
 
         self.pbar.update(update_num) 
         if end and cur_num != self.total_num:
-            click.echo("")
+            print('')
 
 
 class BasicManga:
@@ -163,7 +163,7 @@ class BasicManga:
                 for image in images[s_pnt:e_pnt]:                    
                     save_path = os.path.join(save_dir, image['fname'])
                     t = DownloadThread(image['url'], save_path, \
-                                       headers=self.api.session.headers,\
+                                       # headers=self.api.session.headers,\
                                        proxies=self.api.session.proxies)
                     t.start()
                     thread_pool.append(t)
@@ -186,7 +186,7 @@ class BasicManga:
             
     def download_chapters(self, chapters):
         for i, c in enumerate(chapters):
-            print("Fetching {}".format(c['url']), end='\r')
+            print("\rFetching {}".format(c['url']), end='\r')
 
             images = self.api.fetch_chapter(c['url'])
             save_dir = os.path.join(config.get('outdir'), self.title, c['title'])

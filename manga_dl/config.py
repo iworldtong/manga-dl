@@ -33,6 +33,10 @@ def init():
         "verbose": False,
         # 搜索结果不排序去重 --nomerge
         "nomerge": False,
+
+        # manhuabei aes
+        "KEY": '',
+        "IV": '',
         
         # 一般情况下的headers
         "fake_headers": {
@@ -47,7 +51,7 @@ def init():
         # 漫画源
         "source2url": {
             'mangabz'  : 'https://www.mangabz.com', 
-            # 'manhuagui': 'https://www.manhuagui.com',
+            'manhuagui': 'https://www.manhuagui.com',
             'manhuabei': 'https://www.manhuabei.com',
             'manhuadb' : 'https://www.manhuadb.com',
         }

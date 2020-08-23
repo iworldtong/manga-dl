@@ -2,7 +2,7 @@ import os
 import re
 import copy
 import pyaes
-import execjs
+import js2py
 import base64
 import requests
 from bs4 import BeautifulSoup
@@ -19,6 +19,8 @@ class Manhuabei(MangaApi):
     session = copy.deepcopy(MangaApi.session)
     session.headers.update({"referer": source_url})
 
+    KEY = config.get('KEY')
+    IV = config.get('IV')
 
     @classmethod
     def fetch_image_js(cls, url):
@@ -27,29 +29,33 @@ class Manhuabei(MangaApi):
         cls.session.headers.update({"referer": cls.source_url})
 
         # find Key and IV
-        js_fix = re.search('/js/decrypt[0-9]+.js', html.text).group(0)
-        js_str = cls.request(cls.source_url + js_fix, method="GET").text
-        IV_encrypted = re.findall("iv':(_.*?),", js_str)[0] #_0x1c8ae7
-        IV_searchkey = re.findall('var ' + IV_encrypted + ".*?\['parse'\].*?\[(.*?\'\))\]\);", js_str)[0]  #_0x4936('2d','OO8Z')
-        IV_searchvalue = execjs.compile(js_str).eval(IV_searchkey) #TOtFq
-        IV_searchkey2 = re.findall(IV_searchvalue + "':(_.*?)};", js_str)[0] #_0x4936('22', 'CA]!')
-        IV = execjs.compile(js_str).eval(IV_searchkey2)
-        IV = IV.encode(encoding="utf-8")
+        # js_fix = re.search('/js/decrypt[0-9]+.js', html.text).group(0)
+        # js_str = cls.request(cls.source_url + js_fix, method="GET").text
 
-        KEY_encrypted = re.findall("chapterImages,(.*?),", js_str)[0] #_0xd4450f
-        KEY_searchkey =re.findall('var ' + KEY_encrypted + ".*?\['enc'\].*?\((_.*?\))\);", js_str)[0]  #_0x4936('30','eo!$')
-        KEY = execjs.compile(js_str).eval(KEY_searchkey) 
-        KEY = KEY.encode(encoding="utf-8")
+        # IV_encrypted = re.findall("iv':(_.*?),", js_str)[-1] #_0x1c8ae7
+        # IV_searchkey = re.findall('var ' + IV_encrypted + ".*?\[.*?\].*?\[(.*?\'\))\]\);", js_str)[-1]  #_0x4936('2d','OO8Z')
+        # # print(re.findall('var ' + IV_encrypted + ".*?\].*?\].*?\[(.*?\'\))\]\);", js_str))
+        # # raise Exception('.')
+        # IV_searchkey = "_0x4d6dab['SUFWc']"
+        # IV_searchvalue = execjs.compile(js_str).eval(IV_searchkey) #TOtFq
+        # print(IV_searchvalue)
+        # IV_searchkey2 = re.findall(IV_searchvalue + "':(_.*?)};", js_str)[0] #_0x4936('22', 'CA]!')
+        # IV = execjs.compile(js_str).eval(IV_searchkey2)
+
+        # KEY_encrypted = re.findall("chapterImages,(.*?),", js_str)[0] #_0xd4450f
+        # KEY_searchkey =re.findall('var ' + KEY_encrypted + ".*?\['enc'\].*?\((_.*?\))\);", js_str)[0]  #_0x1e1f('8', 'DyTj')
+        # KEY = js2py.eval_js(js_str + KEY_searchkey)  # 1739ZAQ54321bbG1
+        # print(KEY)
 
         chapterPath = re.search(r"var chapterPath = \"(.*?)\";var chapterPrice", html.text).group(1)
         chapterImages_base64 = re.search(r"var chapterImages = (.*?);var chapterPath = ", html.text).group(1)
 
         encrypted_str = base64.b64decode(chapterImages_base64)
-        decrypter = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(KEY, IV))
+        decrypter = pyaes.Decrypter(pyaes.AESModeOfOperationCBC(cls.KEY.encode(encoding="utf-8"), cls.IV.encode(encoding="utf-8")))
         decrypted_str = decrypter.feed(encrypted_str) 
         decrypted_str += decrypter.feed()
 
-        output = re.sub(r'[\[\]\"\\]', '', decrypted_str.decode("utf-8"))
+        output = re.sub(r'[\[\]\"\\]', '', decrypted_str.strip().decode("utf8"))
         output = output.split(',')
 
         return chapterPath, output
