@@ -87,6 +87,7 @@ class MangaSource:
 
     def search_thread(self, source, keyword, ret_mangas_list, ret_errors):
         try:
+            source = source[::-1] if source[0].isdigit() else source
             api = getattr(importlib.import_module(".addons.{}".format(source), __package__), source.title())
             manga_urls = api.fetch_keyword(keyword, config.get('number'))
             for url in manga_urls:
@@ -112,7 +113,7 @@ class MangaSource:
         if not sources:
             raise ParameterError("Invalid url.")
         source = sources[0]
-        click.echo(_("Downloading manga from %s ..." % source.title()))
+        click.echo(_("Downloading manga from %s ..." % colorize(source.title(), source)))
         try:
             manga = BasicManga(source)
             manga.single(url)

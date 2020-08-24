@@ -25,6 +25,7 @@ colors = {
     "manhuagui": "\033[94m",
     "manhuabei": "\033[91m",
     "manhuadb": "\033[96m",
+    "ykmh": "\033[95m",
 
     "highlight": "\033[93m",
     "error": "\033[31m",

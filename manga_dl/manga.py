@@ -61,7 +61,8 @@ class BasicManga:
         self.n_workers = n_workers 
 
         self.source = source.lower()
-        self.addons = importlib.import_module(".addons.{}".format(source), __package__)
+        self.source = self.source[::-1] if self.source[0].isdigit() else self.source
+        self.addons = importlib.import_module(".addons.{}".format(self.source), __package__)
         self.api = getattr(self.addons, self.source.title())
 
         self.title = ""

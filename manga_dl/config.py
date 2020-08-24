@@ -16,7 +16,7 @@ def init():
     global opts
     opts = {
         # 自定义来源 -s --source
-        "source": "manhuabei",
+        "source": "",
         # 自定义数量 -n --number
         "number":5,
         # 保存目录 -o --outdir
@@ -54,6 +54,8 @@ def init():
             'manhuagui': 'https://www.manhuagui.com',
             'manhuabei': 'https://www.manhuabei.com',
             'manhuadb' : 'https://www.manhuadb.com',
+            'ykmh' : 'https://www.ykmh.com',
+            # '90mh' : 'http://www.90mh.com',
         }
     }
 

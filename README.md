@@ -1,7 +1,7 @@
 # Manga-dl
 **[Manga-dl](https://github.com/iworldtong/manga-dl)** is a command line tool which helps you search and download comic from multiple sources.
 
-Support for Mangabz、Manhuagui、Manhuabei and Manhuadb. See [supported sources](https://github.com/iworldtong/manga-dl#支持的漫画站点).
+Support for Mangabz、Manhuagui、Manhuabei、Manhuadb and Ykmh. See [supported sources](https://github.com/iworldtong/manga-dl#支持的漫画站点).
 
 **Python3 Only. Python 3.7+ Recommended.**
 
@@ -66,6 +66,8 @@ Usage: manga-dl [OPTIONS]
 
   Search and download comic from multiple sources.
 
+  Supported sites: https://github.com/iworldtong/manga-dl#支持的漫画站点
+
   Example: manga-dl -k 辉夜大小姐
 
 Options:
@@ -75,13 +77,16 @@ Options:
   -s, --source TEXT     支持的数据源 ('+'分割): manhuabei+mangabz
   -n, --number INTEGER  搜索数量限制
   -o, --outdir TEXT     指定输出目录, 默认'./manga'
+  -a, --download_all    下载整部漫画，不进入章节选择界面
   -x, --proxy TEXT      指定代理（如socks5://127.0.0.1:1086）
   -v, --verbose         详细模式
   --nomerge             不对搜索结果列表排序和去重
+  --aes_key TEXT        manhuabei
+  --aes_iv TEXT         manhuebai
   --help                Show this message and exit.
 ```
 
-- 默认搜索`mangabz, manhuagui, manhuabei, manhuadb `，每个数量限制为5，保存目录为`./manga`
+- 默认搜索`manhuabei `，数量限制为5，保存到当前终端路径
 - 指定序号时可以使用`1-5 7 10`的形式
 - 默认对搜索结果排序和去重
 - 支持http代理和socks代理，格式形如`-x http://127.0.0.1:1087`或`-x socks5://127.0.0.1:1086`
@@ -95,16 +100,19 @@ Options:
 | 网站                                                         | 名称                                 | 简介                                                         |
 | :----------------------------------------------------------- | ------------------------------------ | :----------------------------------------------------------- |
 | <a href="https://www.mangabz.com/"><img src="https://css.mangabz.com/v202005281721/mangabz/images/logo_mangabz.png" height="50px"></a> | [Mangabz](https://www.mangabz.com/)  | 全網資源最全的在線漫畫、日本漫畫閱讀平臺。擁有時下最熱門的日漫作品，超快的更新速度，第一時間為你奉上極致的閱讀體驗。 |
-| <a href="https://www.manhuagui.com/"><img src="https://qssily.oss-cn-hongkong.aliyuncs.com/img/manhuagui.png" height="50px"></a> | [漫画柜](https://www.manhuagui.com/) | 海量的国产漫画、日韩漫画、欧美漫画等丰富漫画资源，免费为漫画迷提供及时的更新、清新的界面和舒适的体验,努力打造属于漫画迷的漫画乐园。... |
-| <a href="https://www.manhuagui.com/"><img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1596637722/github/manhuabei_logo.png" height="50px"></a> | [漫画呗](https://www.manhuabei.com/) | 原名漫画堆、50漫画网，非商业性的二次元分享交流网站，不仅是一个提供宣传推广全世界各种不同漫画文化的分享交流平台，更致力于推动和发展国内原创动漫。 |
+| <a href="https://www.manhuagui.com/"><img src="https://qssily.oss-cn-hongkong.aliyuncs.com/img/manhuagui.png" height="50px"></a> | [漫画柜](https://www.manhuagui.com/) | 海量的国产漫画、日韩漫画、欧美漫画等丰富漫画资源，免费为漫画迷提供及时的更新、清新的界面和舒适的体验,努力打造属于漫画迷的漫画乐园。 |
+| <a href="https://www.manhuagui.com/"><img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1596637722/github/manhuabei_logo.png" height="50px"></a> | [漫画呗](https://www.manhuabei.com/) | 原名漫画堆、50漫画网，非商业性的二次元分享交流网站，不仅是一个提供宣传推广全世界各种不同漫画文化的分享交流平台，更致力于推动和发展国内原创动漫。**不需翻墙** |
 | <a href="https://www.manhuadb.com/"><img src="https://www.manhuadb.com/assets/www/img/logo.png" height="40px"></a> | [漫画DB](https://www.manhuadb.com/)  | 最专业的日本漫画大全资料库。所有漫画均可免费在线看，同时每部漫画都有丰富的资料，包括登场人物、用语、设定、改编作品及创作幕后等深层的内容。 |
+| <a href="https://www.ykmh.com/"><img src="https://www.ykmh.com/images/ykmh_logo.png" height="40px"></a> | [优酷漫画](https://www.ykmh.com/)    | 有可能找到一些上面版权受限的漫画，推荐，需翻墙               |
+
+参数名：mangabz, manhuagui, manhuabei, manhuadb, ykmh
 
 欢迎提交插件支持更多漫画源！插件写法参考`manga_dl/addons`中的文件
 
 ## 更新记录
 
-- 2020-08-24 实现Manhuabei中AES加密KEY、IV的自动获取，但保留接口，0.1.7
-- 2020-08-23 Manhuagui访问不稳定；Manhuabei JS解析变动，添加`--aes_key、-aes_iv`参数暂时通过外部方式配置
+- 2020-08-25 实现Manhuabei中AES加密KEY、IV的自动获取，但保留接口；添加ykmh站点；0.1.8
+- 2020-08-23 Manhuagui访问不稳定；Manhuabei JS解析变动，暂通过`--aes_key、-aes_iv`手动配置
 - 2020-08-18 修复下载进度条显示错位问题
 - 2020-08-15 完成v0.1版
 

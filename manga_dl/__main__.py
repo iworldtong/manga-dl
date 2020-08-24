@@ -67,8 +67,9 @@ def menu(mangas_list):
 def run():
     ms = MangaSource()
     if config.get("keyword"):
-        mangas_list = ms.search(config.get("keyword"), config.get("source").split())
-        menu(mangas_list)
+        mangas_list = ms.search(config.get("keyword"), config.get("source").split('+'))
+        if len(mangas_list) > 0:
+            menu(mangas_list)
         config.set("keyword", click.prompt(_("请输入要搜索的漫画，或Ctrl+C退出") + "\n >>"))
         run()
     elif config.get("url"):
@@ -85,11 +86,11 @@ def run():
 @click.option(
     "-s",
     "--source",
-    # default="manhuabei",
+    default="ykmh",
     help=_("支持的数据源 ('+'分割): ") + "manhuabei+mangabz",
 )
 @click.option("-n", "--number", default=5, help=_("搜索数量限制"))
-@click.option("-o", "--outdir", default="./manga", help=_("指定输出目录, 默认'./manga'"))
+@click.option("-o", "--outdir", default=".", help=_("指定输出目录, 默认当前终端目录"))
 @click.option("-a", "--download_all", default=False, is_flag=True, help=_("下载整部漫画，不进入章节选择界面"))
 @click.option("-x", "--proxy", default="", help=_("指定代理（如socks5://127.0.0.1:1086）"))
 @click.option("-v", "--verbose", default=False, is_flag=True, help=_("详细模式"))
