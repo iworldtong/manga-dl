@@ -95,8 +95,8 @@ def run():
 @click.option("-v", "--verbose", default=False, is_flag=True, help=_("详细模式"))
 @click.option("--nomerge", default=False, is_flag=True, help=_("不对搜索结果列表排序和去重"))
 
-@click.option("--aes_key", default='KA58ZAQ54321bbG1', help=_("manhuabei"))
-@click.option("--aes_iv", default='A1B2C3DEF1G321bb', help=_("manhuebai"))
+@click.option("--aes_key", default='', help=_("manhuabei"))
+@click.option("--aes_iv", default='', help=_("manhuebai"))
 
 def main(
     keyword,

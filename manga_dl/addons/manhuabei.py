@@ -2,7 +2,7 @@ import os
 import re
 import copy
 import pyaes
-import js2py
+import execjs
 import base64
 import requests
 from bs4 import BeautifulSoup
@@ -23,29 +23,33 @@ class Manhuabei(MangaApi):
     IV = config.get('IV')
 
     @classmethod
+    def fetch_key_iv(cls, html=''):
+        if html == '':
+            html = cls.request('https://www.manhuabei.com/manhua/jinjidejuren/', method="GET")
+            
+        js_fix = re.search('/js/decrypt[0-9]+.js', html.text).group(0)
+        js_str = cls.request(cls.source_url + js_fix, method="GET").text
+
+        IV_encrypted = re.findall("iv':(_.*?),", js_str)[0] #_0x1c8ae7
+        IV_searchkey = re.findall('var ' + IV_encrypted + ".*?\['parse'\]\((_.*?)\[.*?\]\);", js_str)[0]  #_0x4936('2d','OO8Z')
+        IV_searchkey2 = re.findall('var '+ IV_searchkey + ".*?:(_.*?)};", js_str)[0] #_0x4936('22', 'CA]!')
+        IV = execjs.compile(js_str).eval(IV_searchkey2) 
+
+        KEY_encrypted = re.findall("chapterImages,(.*?),", js_str)[0] #_0xd4450f
+        KEY_searchkey =re.findall('var ' + KEY_encrypted + ".*?\((_.*?\))\);", js_str)[0]  #_0x4936('30','eo!$')
+        KEY = execjs.compile(js_str).eval(KEY_searchkey) 
+
+        return KEY, IV
+
+    @classmethod
     def fetch_image_js(cls, url):
         cls.session.headers.update({"referer": url})
         html = cls.request(url, method="GET")
         cls.session.headers.update({"referer": cls.source_url})
 
         # find Key and IV
-        # js_fix = re.search('/js/decrypt[0-9]+.js', html.text).group(0)
-        # js_str = cls.request(cls.source_url + js_fix, method="GET").text
-
-        # IV_encrypted = re.findall("iv':(_.*?),", js_str)[-1] #_0x1c8ae7
-        # IV_searchkey = re.findall('var ' + IV_encrypted + ".*?\[.*?\].*?\[(.*?\'\))\]\);", js_str)[-1]  #_0x4936('2d','OO8Z')
-        # # print(re.findall('var ' + IV_encrypted + ".*?\].*?\].*?\[(.*?\'\))\]\);", js_str))
-        # # raise Exception('.')
-        # IV_searchkey = "_0x4d6dab['SUFWc']"
-        # IV_searchvalue = execjs.compile(js_str).eval(IV_searchkey) #TOtFq
-        # print(IV_searchvalue)
-        # IV_searchkey2 = re.findall(IV_searchvalue + "':(_.*?)};", js_str)[0] #_0x4936('22', 'CA]!')
-        # IV = execjs.compile(js_str).eval(IV_searchkey2)
-
-        # KEY_encrypted = re.findall("chapterImages,(.*?),", js_str)[0] #_0xd4450f
-        # KEY_searchkey =re.findall('var ' + KEY_encrypted + ".*?\['enc'\].*?\((_.*?\))\);", js_str)[0]  #_0x1e1f('8', 'DyTj')
-        # KEY = js2py.eval_js(js_str + KEY_searchkey)  # 1739ZAQ54321bbG1
-        # print(KEY)
+        if cls.KEY in ['', None] or cls.IV in ['', None]:
+            cls.KEY, cls.IV = cls.fetch_key_iv(html)
 
         chapterPath = re.search(r"var chapterPath = \"(.*?)\";var chapterPrice", html.text).group(1)
         chapterImages_base64 = re.search(r"var chapterImages = (.*?);var chapterPath = ", html.text).group(1)
