@@ -94,7 +94,7 @@ def run():
         for i, u in enumerate(url):
             print('[{}/{}] '.format(i+1, len(url)), end='')
             mangas_list.append(ms.single(u))
-        menu(mangas_list, select_all=True)
+        menu(mangas_list)
     else:
         return
 

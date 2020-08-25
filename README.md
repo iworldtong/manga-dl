@@ -119,7 +119,7 @@ Options:
 
 ## 更新记录
 
-- 2020-08-25 实现Manhuabei中AES加密KEY、IV的自动获取，但保留接口；添加ykmh站点；0.1.10
+- 2020-08-25 实现Manhuabei中AES加密KEY、IV的自动获取，但保留接口；添加ykmh站点；0.1.11
 - 2020-08-23 Manhuagui访问不稳定；Manhuabei JS解析变动，暂通过`--aes_key、-aes_iv`手动配置
 - 2020-08-18 修复下载进度条显示错位问题
 - 2020-08-15 完成v0.1版
