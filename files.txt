@@ -1,4 +1,0 @@
-/Users/muketong/anaconda3/lib/python3.7/site-packages/pymanga_dl-0.1.9-py3.7.egg
-/Users/muketong/anaconda3/bin/manga-dl
-/Users/muketong/anaconda3/bin/watchmedo
-/Users/muketong/anaconda3/bin/chardetect

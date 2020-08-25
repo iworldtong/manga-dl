@@ -35,7 +35,7 @@ def load_txt(fpath):
     return urls
 
 
-def menu(mangas_list, select_all=False):
+def menu(mangas_list):
     # 创建table
     tb = pt.PrettyTable()
     tb.field_names = ["序号", "漫画", "状态", "最新话", "总章数", "来源"]
@@ -48,36 +48,31 @@ def menu(mangas_list, select_all=False):
     click.echo(tb)
     click.echo("")
 
-    if select_all:
-        selected_list = list(range(len(mangas_list)))
-        if input('Continue? [Y|n] ') not in ['Y', 'y', '']:
-            return 
-    else:
-        # 用户指定下载序号
-        prompt = (
-            _("请输入{下载序号}，支持形如 {numbers} 的格式，输入 {N} 跳过下载").format(
-                下载序号=colorize(_("下载序号"), "yellow"),
-                numbers=colorize("0 3-5 8", "yellow"),
-                N=colorize("N", "yellow"),
-            )
-            + "\n >>"
+    # 用户指定下载序号
+    prompt = (
+        _("请输入{下载序号}，支持形如 {numbers} 的格式，输入 {N} 跳过下载").format(
+            下载序号=colorize(_("下载序号"), "yellow"),
+            numbers=colorize("0 3-5 8", "yellow"),
+            N=colorize("N", "yellow"),
         )
+        + "\n >>"
+    )
 
-        choices = click.prompt(prompt)
+    choices = click.prompt(prompt)
 
-        while not re.match(r"^((\d+\-\d+)|(\d+)|\s+)+$", choices):
-            if choices.lower() == "n":
-                return
-            choices = click.prompt("%s%s" % (colorize(_("输入有误!"), "red"), prompt))
+    while not re.match(r"^((\d+\-\d+)|(\d+)|\s+)+$", choices):
+        if choices.lower() == "n":
+            return
+        choices = click.prompt("%s%s" % (colorize(_("输入有误!"), "red"), prompt))
 
-        click.echo("")
-        selected_list = []
-        for choice in choices.split():
-            start, to, end = choice.partition("-")
-            if end:
-                selected_list += range(int(start), int(end) + 1)
-            else:
-                selected_list.append(int(start))
+    click.echo("")
+    selected_list = []
+    for choice in choices.split():
+        start, to, end = choice.partition("-")
+        if end:
+            selected_list += range(int(start), int(end) + 1)
+        else:
+            selected_list.append(int(start))
 
     for idx in selected_list:
         if idx < len(mangas_list):
