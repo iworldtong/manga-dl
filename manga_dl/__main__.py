@@ -5,8 +5,9 @@
 @file: __init__.py
 @time: 2020-08-15
 """
-
+import os
 import sys
+import json
 import re
 import gettext
 import click
@@ -20,7 +21,21 @@ from .source import MangaSource
 gettext.install("manga-dl", "locale")
 
 
-def menu(mangas_list):
+def load_txt(fpath):
+    urls = []
+    try:
+        with open(fpath, 'r', errors='ignore') as f:
+            lines = f.readlines() 
+            for line in lines:
+                line = line.strip()
+                if line != '' and line[:4] == 'http':
+                    urls.append(line)
+    except Exception as e:
+        raise e
+    return urls
+
+
+def menu(mangas_list, select_all=False):
     # 创建table
     tb = pt.PrettyTable()
     tb.field_names = ["序号", "漫画", "状态", "最新话", "总章数", "来源"]
@@ -33,31 +48,36 @@ def menu(mangas_list):
     click.echo(tb)
     click.echo("")
 
-    # 用户指定下载序号
-    prompt = (
-        _("请输入{下载序号}，支持形如 {numbers} 的格式，输入 {N} 跳过下载").format(
-            下载序号=colorize(_("下载序号"), "yellow"),
-            numbers=colorize("0 3-5 8", "yellow"),
-            N=colorize("N", "yellow"),
+    if select_all:
+        selected_list = list(range(len(mangas_list)))
+        if input('Continue? [Y|n] ') not in ['Y', 'y', '']:
+            return 
+    else:
+        # 用户指定下载序号
+        prompt = (
+            _("请输入{下载序号}，支持形如 {numbers} 的格式，输入 {N} 跳过下载").format(
+                下载序号=colorize(_("下载序号"), "yellow"),
+                numbers=colorize("0 3-5 8", "yellow"),
+                N=colorize("N", "yellow"),
+            )
+            + "\n >>"
         )
-        + "\n >>"
-    )
 
-    choices = click.prompt(prompt)
+        choices = click.prompt(prompt)
 
-    while not re.match(r"^((\d+\-\d+)|(\d+)|\s+)+$", choices):
-        if choices.lower() == "n":
-            return
-        choices = click.prompt("%s%s" % (colorize(_("输入有误!"), "red"), prompt))
+        while not re.match(r"^((\d+\-\d+)|(\d+)|\s+)+$", choices):
+            if choices.lower() == "n":
+                return
+            choices = click.prompt("%s%s" % (colorize(_("输入有误!"), "red"), prompt))
 
-    click.echo("")
-    selected_list = []
-    for choice in choices.split():
-        start, to, end = choice.partition("-")
-        if end:
-            selected_list += range(int(start), int(end) + 1)
-        else:
-            selected_list.append(int(start))
+        click.echo("")
+        selected_list = []
+        for choice in choices.split():
+            start, to, end = choice.partition("-")
+            if end:
+                selected_list += range(int(start), int(end) + 1)
+            else:
+                selected_list.append(int(start))
 
     for idx in selected_list:
         if idx < len(mangas_list):
@@ -72,9 +92,14 @@ def run():
             menu(mangas_list)
         config.set("keyword", click.prompt(_("请输入要搜索的漫画，或Ctrl+C退出") + "\n >>"))
         run()
+
     elif config.get("url"):
-        manga = ms.single(config.get("url"))
-        manga.download()
+        url = config.get("url")       
+        mangas_list = []
+        for i, u in enumerate(url):
+            print('[{}/{}] '.format(i+1, len(url)), end='')
+            mangas_list.append(ms.single(u))
+        menu(mangas_list, select_all=True)
     else:
         return
 
@@ -82,7 +107,7 @@ def run():
 @click.command()
 @click.version_option()
 @click.option("-k", "--keyword", help=_("搜索关键字"))
-@click.option("-u", "--url", default="", help=_("通过指定的漫画URL下载"))
+@click.option("-u", "--url", default="", help=_("通过指定的漫画URL下载（可指定为包含漫画链接的txt文件）"))
 @click.option(
     "-s",
     "--source",
@@ -95,6 +120,8 @@ def run():
 @click.option("-x", "--proxy", default="", help=_("指定代理（如socks5://127.0.0.1:1086）"))
 @click.option("-v", "--verbose", default=False, is_flag=True, help=_("详细模式"))
 @click.option("--nomerge", default=False, is_flag=True, help=_("不对搜索结果列表排序和去重"))
+@click.option("--auto_proxy", default=False, is_flag=True, help=_("自动按站点配置代理，需设置-x"))
+
 
 @click.option("--aes_key", default='', help=_("manhuabei"))
 @click.option("--aes_iv", default='', help=_("manhuebai"))
@@ -109,6 +136,7 @@ def main(
     proxy,
     verbose,
     nomerge,
+    auto_proxy,
     aes_key,
     aes_iv,
 ):
@@ -124,7 +152,12 @@ def main(
     # 初始化全局变量
     config.init()
     config.set("keyword", keyword)
-    config.set("url", url)
+
+    if os.path.isfile(url):
+        config.set("url", load_txt(url))
+    else:
+        config.set("url", url.split('+'))
+
     if source:
         config.set("source", source)
     config.set("number", min(number, 50))
@@ -133,6 +166,7 @@ def main(
     config.set("verbose", verbose)
     config.set("nomerge", nomerge)
 
+    config.set("auto_proxy", auto_proxy)
     config.set("KEY", aes_key)
     config.set("IV", aes_iv)
 

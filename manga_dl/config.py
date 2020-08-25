@@ -34,6 +34,17 @@ def init():
         # 搜索结果不排序去重 --nomerge
         "nomerge": False,
 
+        # 自动按站点配置代理，需设置-x
+        "auto_proxy": False,
+
+        "proxy_config": {
+            'manhuabei': False,
+            'ykmh'     : True,
+            'mangabz'  : True, 
+            'manhuagui': True,
+            'manhuadb' : True,
+        },
+
         # manhuabei aes
         "KEY": '',
         "IV": '',

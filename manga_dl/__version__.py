@@ -9,7 +9,7 @@
 __title__ = "pymanga-dl"
 __description__ = "Search and download comic."
 __url__ = "https://github.com/iworldtong/manga-dl"
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 __author__ = "muketong"
 __author_email__ = "iworldtong@gmail.com"
 __license__ = "MIT License"

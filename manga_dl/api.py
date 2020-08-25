@@ -22,7 +22,6 @@ class MangaApi:
         session.proxies.update(config.get("proxies"))
     session.headers.update({"referer": "http://www.google.com/"})
 
-
     @classmethod
     @retry(wait=wait_fixed(5), stop=stop_after_attempt(1000))
     def request(cls, url, method="GET", data=None):
@@ -35,3 +34,14 @@ class MangaApi:
         if not resp.text:
             raise ResponseError("No response data.")
         return resp
+
+    @classmethod
+    def auto_set_proxy(cls, source):
+        proxy_config = config.get("proxy_config")
+        if_proxy = proxy_config[source]
+
+        if if_proxy:
+            if config.get("proxies"):
+                cls.session.proxies.update(config.get("proxies"))
+        else:
+            cls.session.proxies.update({})

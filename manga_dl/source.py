@@ -113,7 +113,7 @@ class MangaSource:
         if not sources:
             raise ParameterError("Invalid url.")
         source = sources[0]
-        click.echo(_("Downloading manga from %s ..." % colorize(source.title(), source)))
+        click.echo(_("Fetcing %s from %s ..." % (colorize(url, "highlight"), colorize(source.title(), source))))
         try:
             manga = BasicManga(source)
             manga.single(url)

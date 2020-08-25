@@ -73,27 +73,35 @@ Usage: manga-dl [OPTIONS]
 Options:
   --version             Show the version and exit.
   -k, --keyword TEXT    搜索关键字
-  -u, --url TEXT        通过指定的漫画URL下载
+  -u, --url TEXT        通过指定的漫画URL下载（可指定为包含漫画链接的txt文件）
   -s, --source TEXT     支持的数据源 ('+'分割): manhuabei+mangabz
   -n, --number INTEGER  搜索数量限制
-  -o, --outdir TEXT     指定输出目录, 默认'./manga'
+  -o, --outdir TEXT     指定输出目录, 默认当前终端目录
   -a, --download_all    下载整部漫画，不进入章节选择界面
   -x, --proxy TEXT      指定代理（如socks5://127.0.0.1:1086）
   -v, --verbose         详细模式
   --nomerge             不对搜索结果列表排序和去重
+  --auto_proxy          自动按站点配置代理，需设置-x
   --aes_key TEXT        manhuabei
   --aes_iv TEXT         manhuebai
   --help                Show this message and exit.
 ```
 
 - 默认搜索`manhuabei `，数量限制为5，保存到当前终端路径
+
 - 指定序号时可以使用`1-5 7 10`的形式
+
 - 默认对搜索结果排序和去重
+
 - 支持http代理和socks代理，格式形如`-x http://127.0.0.1:1087`或`-x socks5://127.0.0.1:1086`
+
+- `-u`参数可指定为包含漫画链接的txt文件，由于不同站点代理设置不同，若从文件加载最好自动设置代理`-x socks5://127.0.0.1:1086 --auto_proxy`：
+
+  <img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1598325769/github/manga-dl_u-1.png" height="300pt">
 
 示例：
 
-<img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1597549624/github/manga-dl_k-1.png">
+<img src="https://res.cloudinary.com/dzu6x6nqi/image/upload/v1597549624/github/manga-dl_k-1.png" height="250">
 
 ## 支持的漫画站点
 
@@ -111,7 +119,7 @@ Options:
 
 ## 更新记录
 
-- 2020-08-25 实现Manhuabei中AES加密KEY、IV的自动获取，但保留接口；添加ykmh站点；0.1.8
+- 2020-08-25 实现Manhuabei中AES加密KEY、IV的自动获取，但保留接口；添加ykmh站点；0.1.9
 - 2020-08-23 Manhuagui访问不稳定；Manhuabei JS解析变动，暂通过`--aes_key、-aes_iv`手动配置
 - 2020-08-18 修复下载进度条显示错位问题
 - 2020-08-15 完成v0.1版

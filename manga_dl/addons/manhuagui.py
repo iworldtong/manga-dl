@@ -15,10 +15,13 @@ from ..utils import validate_title
 
 class Manhuagui(MangaApi):
 
-    source_url = config.get('source2url')['manhuagui']
+    source = 'manhuagui'
+    source_url = config.get('source2url')[source]
 
     session = copy.deepcopy(MangaApi.session)
     session.headers.update({"referer": source_url})
+    if config.get("auto_proxy"):
+        MangaApi.auto_set_proxy(source)
 
     @classmethod
     def fetch_image_js(cls, url):

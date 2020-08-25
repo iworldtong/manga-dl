@@ -15,10 +15,13 @@ from ..utils import validate_title
 
 class Ykmh(MangaApi):
 
-    source_url = config.get('source2url')['ykmh']
+    source = 'ykmh'
+    source_url = config.get('source2url')[source]
 
     session = copy.deepcopy(MangaApi.session)
     session.headers.update({"referer": source_url})
+    if config.get("auto_proxy"):
+        MangaApi.auto_set_proxy(source)
 
     @classmethod 
     def fetch_chapter(cls, chapter_url, chapter_dir=None):

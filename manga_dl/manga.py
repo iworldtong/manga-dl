@@ -197,7 +197,7 @@ class BasicManga:
 
     def select_chapters(self, chapters_list) -> list:
         options = [c['title'] for c in chapters_list]        
-        ret = pick(options, title='Please choose chapters to download (select: <space>/→; select all: a; toggle all: t; resort all: r):',\
+        ret = pick(options, title='{} (select: <space>/→; select all: a; toggle all: t; resort all: r):'.format(self.title),\
                    default_index=list(range(len(chapters_list))), multiselect=True)
 
         selected_titles = [i[0] for i in ret]
@@ -212,8 +212,9 @@ class BasicManga:
         else:
             click.echo(" | ".join(self.row))
         click.echo("---------------------------------------------------------------")
-        if input('Continue? [Y|n]') not in ['y', 'Y', '']:
-            return
+        
+        # if input('Continue? [Y|n]') not in ['y', 'Y', '']:
+        #     return
 
         if config.get('download_all'):
             self.picked_chapters = self.all_chapters

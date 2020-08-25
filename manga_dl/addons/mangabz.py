@@ -15,15 +15,18 @@ from ..utils import validate_title
 
 class Mangabz(MangaApi):
 
-    source_url = config.get('source2url')['mangabz']
+    source = 'mangabz'
+    source_url = config.get('source2url')[source]
 
     session = copy.deepcopy(MangaApi.session)
     session.headers.update({"referer": source_url})
+    if config.get("auto_proxy"):
+        MangaApi.auto_set_proxy(source)
                         
     @classmethod
     def fetch_chapter_argv(cls, chapter_url):
         cls.session.headers.update({"referer": chapter_url})
-        res = cls.request(url, method="GET")
+        res = cls.request(chapter_url, method="GET")
         cls.session.headers.update({"referer": cls.source_url})
 
         mangabz_cid = re.findall("MANGABZ_CID=(.*?);", res.text)[0]

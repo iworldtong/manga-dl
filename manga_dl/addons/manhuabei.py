@@ -13,11 +13,13 @@ from ..utils import validate_title
 
 
 class Manhuabei(MangaApi):
-
-    source_url = config.get('source2url')['manhuabei']
+    source = 'manhuabei'
+    source_url = config.get('source2url')[source]
 
     session = copy.deepcopy(MangaApi.session)
     session.headers.update({"referer": source_url})
+    if config.get("auto_proxy"):
+        MangaApi.auto_set_proxy(source)
 
     KEY = config.get('KEY')
     IV = config.get('IV')
