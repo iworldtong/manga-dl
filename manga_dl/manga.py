@@ -164,8 +164,9 @@ class BasicManga:
                 for image in images[s_pnt:e_pnt]:                    
                     save_path = os.path.join(save_dir, image['fname'])
                     t = DownloadThread(image['url'], save_path, \
-                                       # headers=self.api.session.headers,\
-                                       proxies=self.api.session.proxies)
+                                       headers=self.api.session.headers,\
+                                       proxies=self.api.session.proxies \
+                                       )
                     t.start()
                     thread_pool.append(t)
 

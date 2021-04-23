@@ -86,8 +86,7 @@ class Mangabz(MangaApi):
         status = tmp[1]
         latest = '-'
         if status == '連載中':
-            manga_info['lastest'] = tmp[-2] + tmp[-1]
-            manga_info['date'] = tmp[-3] 
+            latest = tmp[-3] + ' ' + tmp[-1]
 
         # chapters
         chapters_div = bs.find('div', {'id': 'chapterlistload'}).find_all('a')

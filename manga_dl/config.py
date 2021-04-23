@@ -43,6 +43,7 @@ def init():
             'mangabz'  : True, 
             'manhuagui': True,
             'manhuadb' : True,
+            'dogemanga': True,
         },
 
         # manhuabei aes
@@ -62,10 +63,12 @@ def init():
         # 漫画源
         "source2url": {
             'mangabz'  : 'https://www.mangabz.com', 
-            'manhuagui': 'https://www.manhuagui.com',
+            'manhuagui': 'https://tw.manhuagui.com',
             'manhuabei': 'https://www.manhuabei.com',
             'manhuadb' : 'https://www.manhuadb.com',
             'ykmh' : 'https://www.ykmh.com',
+
+            'dogemanga': 'https://dogemanga.com',
             # '90mh' : 'http://www.90mh.com',
         }
     }
